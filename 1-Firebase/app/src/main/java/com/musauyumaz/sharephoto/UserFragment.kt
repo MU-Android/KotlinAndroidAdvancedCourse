@@ -5,15 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.Navigation
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.musauyumaz.sharephoto.databinding.FragmentUserBinding
 
 class UserFragment : Fragment() {
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        return super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
+        auth = Firebase.auth
     }
 
     override fun onDestroyView() {
@@ -32,20 +38,39 @@ class UserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentUserBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     private fun register(view: View){
-        val email = binding.edtEmail.text.toString()
-        val password = binding.edtPassword.text.toString()
+        val email = binding.edtEmail.text.toString().trim()
+        val password = binding.edtPassword.text.toString().trim()
 
-        val action = UserFragmentDirections.actionUserFragmentToFeedFragment()
-        Navigation.findNavController(view).navigate(action)
+        if (email.isNotBlank() && password.isNotBlank()){
+            auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener { task ->
+                if(task.isSuccessful){
+                    val action = UserFragmentDirections.actionUserFragmentToFeedFragment()
+                    Navigation.findNavController(view).navigate(action)
+                }
+            }.addOnFailureListener { exception ->
+                showErrorDialog(exception.localizedMessage ?: "Bir hata oluştu")
+            }
+        } else {
+            showErrorDialog("Lütfen email ve şifre giriniz!")
+        }
     }
 
     private fun login(view: View){
-        val email = binding.edtEmail.text.toString()
-        val password = binding.edtPassword.text.toString()
+        val email = binding.edtEmail.text.toString().trim()
+        val password = binding.edtPassword.text.toString().trim()
+    }
+
+    private fun showErrorDialog(message: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Hata")
+            .setMessage(message)
+            .setPositiveButton("Tamam") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }
