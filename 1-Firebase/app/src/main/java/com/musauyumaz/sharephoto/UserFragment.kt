@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import com.musauyumaz.sharephoto.databinding.FragmentUserBinding
 
 class UserFragment : Fragment() {
@@ -38,6 +39,9 @@ class UserFragment : Fragment() {
     private fun register(view: View){
         val email = binding.edtEmail.text.toString()
         val password = binding.edtPassword.text.toString()
+
+        val action = UserFragmentDirections.actionUserFragmentToFeedFragment()
+        Navigation.findNavController(view).navigate(action)
     }
 
     private fun login(view: View){

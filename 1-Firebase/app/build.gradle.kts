@@ -2,13 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
     kotlin("plugin.serialization") version "2.0.21"
+    alias(libs.plugins.navigation.safeargs.kotlin)
 }
 
 android {
     namespace = "com.musauyumaz.sharephoto"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.musauyumaz.sharephoto"
@@ -46,6 +45,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.fragment)
+    implementation(libs.androidx.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
