@@ -1,10 +1,16 @@
 package com.musauyumaz.sharephoto
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.musauyumaz.sharephoto.databinding.FragmentUploadBinding
 
 class UploadFragment : Fragment() {
@@ -25,7 +31,16 @@ class UploadFragment : Fragment() {
     }
 
     private fun selectImage(view: View){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),Manifest.permission.READ_MEDIA_IMAGES)) {
+                    Snackbar.make(view,"Galeriye gitmek için izin vermeniz gerekiyor",Snackbar.LENGTH_INDEFINITE).setAction("İzin Ver", View.OnClickListener{
+                    }).show()
+                }
+            }
+        } else {
 
+        }
     }
 
     override fun onCreateView(
