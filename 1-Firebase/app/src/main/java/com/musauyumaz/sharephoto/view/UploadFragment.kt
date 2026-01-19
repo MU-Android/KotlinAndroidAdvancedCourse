@@ -1,4 +1,4 @@
-package com.musauyumaz.sharephoto
+package com.musauyumaz.sharephoto.view
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
@@ -10,14 +10,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log.e
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.registerForActivityResult
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -31,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.storage
+import com.musauyumaz.sharephoto.UploadFragmentDirections
 import com.musauyumaz.sharephoto.databinding.FragmentUploadBinding
 import java.util.UUID
 
@@ -77,7 +76,7 @@ class UploadFragment : Fragment() {
                     postMap.put("date", Timestamp.now())
 
                     db.collection("Posts").add(postMap).addOnSuccessListener { documentReference ->
-                        val action = UploadFragmentDirections.actionUploadFragmentToFeedFragment()
+                        val action = UploadFragmentDirections.Companion.actionUploadFragmentToFeedFragment()
                         Navigation.findNavController(view).navigate(action)
                     }.addOnFailureListener { exception ->
                         Toast.makeText(requireContext(),exception.localizedMessage,Toast.LENGTH_LONG).show()

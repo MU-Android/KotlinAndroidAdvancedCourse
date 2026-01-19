@@ -1,4 +1,4 @@
-package com.musauyumaz.sharephoto
+package com.musauyumaz.sharephoto.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,7 +14,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.musauyumaz.sharephoto.FeedFragmentDirections
+import com.musauyumaz.sharephoto.R
 import com.musauyumaz.sharephoto.databinding.FragmentFeedBinding
+import com.musauyumaz.sharephoto.model.Post
+import java.util.Date
 
 class FeedFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
     private var _binding : FragmentFeedBinding? = null
@@ -22,6 +26,7 @@ class FeedFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
     private lateinit var popup: PopupMenu
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private val postList: ArrayList<Post> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
@@ -57,11 +62,11 @@ class FeedFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         if(item?.itemId == R.id.uploadItem){
-            val action = FeedFragmentDirections.actionFeedFragmentToUploadFragment()
+            val action = FeedFragmentDirections.Companion.actionFeedFragmentToUploadFragment()
             Navigation.findNavController(requireView()).navigate(action)
         }else if (item?.itemId == R.id.closeItem){
             auth.signOut()
-            val action = FeedFragmentDirections.actionFeedFragmentToUserFragment()
+            val action = FeedFragmentDirections.Companion.actionFeedFragmentToUserFragment()
             Navigation.findNavController(requireView()).navigate(action)
         }
 
@@ -74,12 +79,16 @@ class FeedFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                 Toast.makeText(requireContext(),error.localizedMessage,Toast.LENGTH_LONG).show()
             }else{
                 if(value != null && !value.isEmpty){
+                    postList.clear()
                     val documents = value.documents
                     for (document in documents){
                         val comment = document.get("comment") as String
                         val downloadUrl = document.get("downloadUrl") as String
                         val email = document.get("email") as String
-                        
+                        val date = document.get("date") as Date
+
+                        val post = Post(email, comment, downloadUrl, date)
+                        postList.add(post)
                     }
                 }
             }

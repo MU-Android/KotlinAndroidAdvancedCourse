@@ -1,6 +1,5 @@
-package com.musauyumaz.sharephoto
+package com.musauyumaz.sharephoto.view
 
-import android.R.attr.password
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,6 +10,7 @@ import androidx.navigation.Navigation
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.musauyumaz.sharephoto.UserFragmentDirections
 import com.musauyumaz.sharephoto.databinding.FragmentUserBinding
 
 class UserFragment : Fragment() {
@@ -38,7 +38,7 @@ class UserFragment : Fragment() {
         binding.btnLogin.setOnClickListener(::login)
 
         if(auth.currentUser != null){
-            val action = UserFragmentDirections.actionUserFragmentToFeedFragment()
+            val action = UserFragmentDirections.Companion.actionUserFragmentToFeedFragment()
             Navigation.findNavController(view).navigate(action)
         }
     }
@@ -58,7 +58,7 @@ class UserFragment : Fragment() {
         if (email.isNotBlank() && password.isNotBlank()){
             auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener { task ->
                 if(task.isSuccessful){
-                    val action = UserFragmentDirections.actionUserFragmentToFeedFragment()
+                    val action = UserFragmentDirections.Companion.actionUserFragmentToFeedFragment()
                     Navigation.findNavController(view).navigate(action)
                 }
             }.addOnFailureListener { exception ->
@@ -76,7 +76,7 @@ class UserFragment : Fragment() {
         if (email.isNotBlank() && password.isNotBlank()){
             auth.signInWithEmailAndPassword(email,password).addOnCompleteListener { task ->
                 if(task.isSuccessful){
-                    val action = UserFragmentDirections.actionUserFragmentToFeedFragment()
+                    val action = UserFragmentDirections.Companion.actionUserFragmentToFeedFragment()
                     Navigation.findNavController(view).navigate(action)
                 }
             }.addOnFailureListener { exception ->
