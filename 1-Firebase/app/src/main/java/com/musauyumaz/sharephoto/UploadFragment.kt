@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.storage.FirebaseStorage
 import com.musauyumaz.sharephoto.databinding.FragmentUploadBinding
+import java.util.UUID
 
 class UploadFragment : Fragment() {
     private var _binding : FragmentUploadBinding? = null
@@ -50,11 +51,17 @@ class UploadFragment : Fragment() {
     }
 
     private fun upload(view: View){
+        val uuid = UUID.randomUUID()
+        val pictureName = "${uuid}.jpg"
+
         val reference = storage.reference
-        val imageReference = reference.child("images").child(auth.currentUser!!.uid).child(selectedPicture!!.lastPathSegment!!)
+        val imageReference = reference.child("images").child(pictureName)
         if(selectedPicture != null){
             imageReference.putFile(selectedPicture!!).addOnSuccessListener {uploadTask ->
-                
+                imageReference.downloadUrl.addOnSuccessListener { uri ->
+                    val downloadUrl = uri.toString()
+                    //print(downloadUrl)
+                }
             }.addOnFailureListener {
                 Toast.makeText(requireContext(),it.localizedMessage,Toast.LENGTH_LONG).show()
             }
