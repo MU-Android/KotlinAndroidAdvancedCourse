@@ -22,6 +22,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.storage.FirebaseStorage
 import com.musauyumaz.sharephoto.databinding.FragmentUploadBinding
 
 class UploadFragment : Fragment() {
@@ -31,9 +35,12 @@ class UploadFragment : Fragment() {
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
     var selectedPicture: Uri? = null
     var selectedBitmap: Bitmap?=null
+    private lateinit var auth : FirebaseAuth
+    private lateinit var storage: FirebaseStorage
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerLaunchers()
+        auth = Firebase.auth
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +50,15 @@ class UploadFragment : Fragment() {
     }
 
     private fun upload(view: View){
-
+        val reference = storage.reference
+        val imageReference = reference.child("images").child(auth.currentUser!!.uid).child(selectedPicture!!.lastPathSegment!!)
+        if(selectedPicture != null){
+            imageReference.putFile(selectedPicture!!).addOnSuccessListener {uploadTask ->
+                
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(),it.localizedMessage,Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun selectImage(view: View){
@@ -120,5 +135,9 @@ class UploadFragment : Fragment() {
                 Toast.makeText(requireContext(),"İzin reddedildi izne ihtiyacımız var",Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun uploadImageImgBB(){
+        val apiKey = "6314fa32d023931c2fec24973e96c109"
     }
 }
