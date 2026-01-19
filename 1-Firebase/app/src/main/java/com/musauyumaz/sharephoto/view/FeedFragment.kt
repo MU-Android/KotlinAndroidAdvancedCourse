@@ -14,6 +14,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.musauyumaz.sharephoto.FeedFragmentDirections
 import com.musauyumaz.sharephoto.R
@@ -83,7 +84,7 @@ class FeedFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
     }
 
     private fun fireStoreGetData(){
-        db.collection("Posts").addSnapshotListener { value, error ->
+        db.collection("Posts").orderBy("date", Query.Direction.DESCENDING).addSnapshotListener { value, error ->
             if (error != null){
                 Toast.makeText(requireContext(),error.localizedMessage,Toast.LENGTH_LONG).show()
             }else{
