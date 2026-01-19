@@ -21,11 +21,16 @@ import androidx.activity.result.registerForActivityResult
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.storage
 import com.musauyumaz.sharephoto.databinding.FragmentUploadBinding
 import java.util.UUID
 
@@ -38,10 +43,13 @@ class UploadFragment : Fragment() {
     var selectedBitmap: Bitmap?=null
     private lateinit var auth : FirebaseAuth
     private lateinit var storage: FirebaseStorage
+    private lateinit var db : FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        registerLaunchers()
+        storage = Firebase.storage
         auth = Firebase.auth
+        db = Firebase.firestore
+        registerLaunchers()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,6 +69,20 @@ class UploadFragment : Fragment() {
                 imageReference.downloadUrl.addOnSuccessListener { uri ->
                     val downloadUrl = uri.toString()
                     //print(downloadUrl)
+
+                    val postMap = hashMapOf<String, Any>()
+                    postMap.put("downloadUrl", downloadUrl)
+                    postMap.put("email", auth.currentUser?.email.toString())
+                    postMap.put("comment", binding.edtComment.text.toString())
+                    postMap.put("date", Timestamp.now())
+
+                    db.collection("Posts").add(postMap).addOnSuccessListener { documentReference ->
+                        val action = UploadFragmentDirections.actionUploadFragmentToFeedFragment()
+                        Navigation.findNavController(view).navigate(action)
+                    }.addOnFailureListener { exception ->
+                        Toast.makeText(requireContext(),exception.localizedMessage,Toast.LENGTH_LONG).show()
+                    }
+
                 }
             }.addOnFailureListener {
                 Toast.makeText(requireContext(),it.localizedMessage,Toast.LENGTH_LONG).show()
