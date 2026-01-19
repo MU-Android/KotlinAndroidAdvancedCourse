@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.musauyumaz.sharephoto.FeedFragmentDirections
 import com.musauyumaz.sharephoto.R
+import com.musauyumaz.sharephoto.adapter.PostAdapter
 import com.musauyumaz.sharephoto.databinding.FragmentFeedBinding
 import com.musauyumaz.sharephoto.model.Post
 import java.util.Date
@@ -27,6 +29,8 @@ class FeedFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private val postList: ArrayList<Post> = arrayListOf()
+    private var adapter: PostAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
@@ -40,6 +44,11 @@ class FeedFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
         popup = PopupMenu(requireContext(), binding.floatingActionButton)
         popup.menuInflater.inflate(R.menu.my_popup_menu, popup.menu)
         popup.setOnMenuItemClickListener(this)
+
+        fireStoreGetData()
+        adapter = PostAdapter(postList)
+        binding.feedRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.feedRecyclerView.adapter = adapter
     }
 
     private fun floatingButtonClicked(view: View){
@@ -90,6 +99,7 @@ class FeedFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                         val post = Post(email, comment, downloadUrl, date)
                         postList.add(post)
                     }
+                    adapter?.notifyDataSetChanged()
                 }
             }
         }
