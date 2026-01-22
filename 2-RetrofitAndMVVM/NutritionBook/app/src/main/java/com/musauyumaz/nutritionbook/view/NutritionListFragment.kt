@@ -6,9 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.musauyumaz.nutritionbook.databinding.FragmentNutritionListBinding
+import com.musauyumaz.nutritionbook.model.Nutrition
+import com.musauyumaz.nutritionbook.service.NutritionAPI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class NutritionListFragment : Fragment() {
-    //https://raw.githubusercontent.com/atilsamancioglu/BTK20-JSONVeriSeti/refs/heads/master/besinler.json
     private var _binding: FragmentNutritionListBinding? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +31,19 @@ class NutritionListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://raw.githubusercontent.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(NutritionAPI::class.java)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = retrofit.getNutrition()
+            response.forEach {
+                println(it.name)
+            }
+        }
     }
 
     override fun onDestroyView() {
