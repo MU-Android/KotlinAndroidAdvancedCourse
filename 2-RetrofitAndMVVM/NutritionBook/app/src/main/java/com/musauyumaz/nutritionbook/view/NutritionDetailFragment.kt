@@ -1,4 +1,4 @@
-package com.musauyumaz.nutritionbook
+package com.musauyumaz.nutritionbook.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

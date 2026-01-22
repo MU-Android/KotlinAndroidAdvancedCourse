@@ -6,7 +6,7 @@
     app:startDestination="@id/nutritionListFragment2">
     <fragment
         android:id="@+id/nutritionListFragment2"
-        android:name="com.musauyumaz.nutritionbook.NutritionListFragment"
+        android:name="com.musauyumaz.nutritionbook.view.NutritionListFragment"
         android:label="fragment_nutrition_list"
         tools:layout="@layout/fragment_nutrition_list" >
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/nutritionDetailFragment"
-        android:name="com.musauyumaz.nutritionbook.NutritionDetailFragment"
+        android:name="com.musauyumaz.nutritionbook.view.NutritionDetailFragment"
         android:label="fragment_nutrition_detail"
         tools:layout="@layout/fragment_nutrition_detail" >
         <argument
