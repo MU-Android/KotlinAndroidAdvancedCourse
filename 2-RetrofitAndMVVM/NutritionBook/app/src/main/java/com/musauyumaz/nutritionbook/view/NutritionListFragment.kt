@@ -31,19 +31,6 @@ class NutritionListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://raw.githubusercontent.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(NutritionAPI::class.java)
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = retrofit.getNutrition()
-            response.forEach {
-                println(it.name)
-            }
-        }
     }
 
     override fun onDestroyView() {
