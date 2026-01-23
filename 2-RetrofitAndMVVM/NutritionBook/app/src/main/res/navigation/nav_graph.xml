@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nutritionListFragment">
+    <fragment
+        android:id="@+id/nutritionListFragment"
+        android:name="com.musauyumaz.nutritionbook.view.NutritionListFragment"
+        android:label="fragment_nutrition_list"
+        tools:layout="@layout/fragment_nutrition_list" >
+        <action
+            android:id="@+id/action_nutritionListFragment_to_nutritionDetailFragment"
+            app:destination="@id/nutritionDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nutritionDetailFragment"
+        android:name="com.musauyumaz.nutritionbook.view.NutritionDetailFragment"
+        android:label="fragment_nutrition_detail"
+        tools:layout="@layout/fragment_nutrition_detail" >
+        <argument
+            android:name="nutritionId"
+            app:argType="integer" />
+    </fragment>
+</navigation>
