@@ -27,5 +27,5 @@ data class Nutrition(
     val pictureUrl: String?
 ){
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    var id: Int = 0
 }

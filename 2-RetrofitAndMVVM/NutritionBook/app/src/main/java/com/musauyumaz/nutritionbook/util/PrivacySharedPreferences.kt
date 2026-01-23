@@ -9,7 +9,7 @@ class PrivacySharedPreferences {
         private var sharedPreferences: SharedPreferences? = null
 
         @Volatile
-        private var instance: PrivacySharedPreferences? = null  // ← instance ekle
+        private var instance: PrivacySharedPreferences? = null
 
         private val lock = Any()
 
@@ -24,11 +24,10 @@ class PrivacySharedPreferences {
             sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
             return PrivacySharedPreferences()
         }
-
-        fun saveTime(time: Long) {
-            sharedPreferences?.edit()?.putLong(TIME, time)?.apply()
-        }
-
-        fun getTime() = sharedPreferences?.getLong(TIME, 0)
     }
+
+    fun saveTime(time: Long) {
+        sharedPreferences?.edit()?.putLong(TIME, time)?.apply()
+    }
+    fun getTime() = sharedPreferences?.getLong(TIME, 0)
 }
