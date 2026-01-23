@@ -8,6 +8,8 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.musauyumaz.nutritionbook.databinding.NutritionRecyclerRowBinding
 import com.musauyumaz.nutritionbook.model.Nutrition
+import com.musauyumaz.nutritionbook.util.createPlaceHolder
+import com.musauyumaz.nutritionbook.util.downloadPicture
 import com.musauyumaz.nutritionbook.view.NutritionListFragmentDirections
 
 class NutritionRecyclerViewAdapter(val nutritionList: ArrayList<Nutrition>): RecyclerView.Adapter<NutritionRecyclerViewAdapter.NutritionViewHolder>() {
@@ -19,6 +21,7 @@ class NutritionRecyclerViewAdapter(val nutritionList: ArrayList<Nutrition>): Rec
     override fun onBindViewHolder(holder: NutritionViewHolder,position: Int) {
         holder.binding.txtName.text = nutritionList[position].name
         holder.binding.txtCalorie.text = nutritionList[position].calorie
+        holder.binding.imageView.downloadPicture(nutritionList[position].pictureUrl,createPlaceHolder(holder.itemView.context))
 
         holder.itemView.setOnClickListener {
             val action = NutritionListFragmentDirections.actionNutritionListFragmentToNutritionDetailFragment(nutritionList[position].id)
