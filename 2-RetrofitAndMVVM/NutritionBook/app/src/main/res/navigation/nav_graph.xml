@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/nutritionListFragment2">
+    app:startDestination="@id/nutritionListFragment">
     <fragment
-        android:id="@+id/nutritionListFragment2"
+        android:id="@+id/nutritionListFragment"
         android:name="com.musauyumaz.nutritionbook.view.NutritionListFragment"
         android:label="fragment_nutrition_list"
         tools:layout="@layout/fragment_nutrition_list" >
         <action
-            android:id="@+id/action_nutritionListFragment2_to_nutritionDetailFragment"
+            android:id="@+id/action_nutritionListFragment_to_nutritionDetailFragment"
             app:destination="@id/nutritionDetailFragment" />
     </fragment>
     <fragment

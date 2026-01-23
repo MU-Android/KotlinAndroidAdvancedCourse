@@ -7,23 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.musauyumaz.nutritionbook.adapter.NutritionRecyclerViewAdapter
 import com.musauyumaz.nutritionbook.databinding.FragmentNutritionListBinding
-import com.musauyumaz.nutritionbook.model.Nutrition
-import com.musauyumaz.nutritionbook.service.NutritionAPI
 import com.musauyumaz.nutritionbook.viewmodel.NutritionListViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class NutritionListFragment : Fragment() {
     private var _binding: FragmentNutritionListBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: NutritionListViewModel
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val nutritionRecyclerViewAdapter: NutritionRecyclerViewAdapter = NutritionRecyclerViewAdapter(arrayListOf())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +31,7 @@ class NutritionListFragment : Fragment() {
         viewModel.refreshData()
 
         binding.recyclerViewNutrition.layoutManager = LinearLayoutManager(requireContext())
-        //binding.recyclerViewNutrition.adapter =
+        binding.recyclerViewNutrition.adapter = nutritionRecyclerViewAdapter
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.recyclerViewNutrition.visibility = View.GONE
@@ -48,17 +40,22 @@ class NutritionListFragment : Fragment() {
             viewModel.refreshDataFromInternet()
             binding.swipeRefreshLayout.isRefreshing = false
         }
+        observeLiveData()
     }
 
     private fun observeLiveData(){
         viewModel.nutritions.observe(viewLifecycleOwner){
-
+            nutritionRecyclerViewAdapter.updateNutritionList(it)
             binding.recyclerViewNutrition.visibility = View.VISIBLE
         }
 
         viewModel.nutritionError.observe(viewLifecycleOwner){
-            binding.txtErrorMessage.visibility = if (it) View.VISIBLE else View.GONE
-            binding.recyclerViewNutrition.visibility = View.GONE
+            if (it) {
+                binding.txtErrorMessage.visibility = View.VISIBLE
+                binding.recyclerViewNutrition.visibility = View.GONE
+            } else {
+                binding.txtErrorMessage.visibility = View.GONE
+            }
         }
 
         viewModel.nutritionLoading.observe(viewLifecycleOwner){

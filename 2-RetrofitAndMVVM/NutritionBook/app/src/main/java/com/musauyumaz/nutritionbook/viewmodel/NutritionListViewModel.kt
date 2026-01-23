@@ -21,6 +21,7 @@ class NutritionListViewModel(application: Application) : AndroidViewModel(applic
     private val privacySharedPreferences = PrivacySharedPreferences(getApplication())
     private val nutritionAPIService = NutritionAPIService()
     private val updateTime = 10 * 60 * 1000 * 1000 * 1000L
+
     fun refreshData(){
         val savedTime = privacySharedPreferences.getTime()
         if (savedTime != null && savedTime != 0L && System.nanoTime() - savedTime < updateTime) {
@@ -28,27 +29,33 @@ class NutritionListViewModel(application: Application) : AndroidViewModel(applic
         }else{
             getDataOnInternet()
         }
-
     }
 
     fun refreshDataFromInternet(){
         getDataOnInternet()
     }
+
     private fun getDataOnInternet(){
         nutritionLoading.value = true
         viewModelScope.launch {
-            val nutritionList = nutritionAPIService.getData()
-            withContext(Dispatchers.Main){
-                nutritionLoading.value = false
-                saveRoom(nutritionList)
-                Toast.makeText(getApplication(),"Besinleri internetten aldık", Toast.LENGTH_LONG).show()
+            try {
+                val nutritionList = nutritionAPIService.getData()
+                withContext(Dispatchers.Main){
+                    nutritionLoading.value = false
+                    saveRoom(nutritionList)
+                    Toast.makeText(getApplication(),"Besinleri internetten aldık", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    nutritionLoading.value = false
+                    nutritionError.value = true
+                }
             }
         }
     }
 
     private fun getDataFromRoom() {
         nutritionLoading.value = true
-
         viewModelScope.launch(Dispatchers.IO) {
             val nutritionList = NutritionDatabase(getApplication()).nutritionDao().getAll()
             withContext(Dispatchers.Main){
@@ -58,12 +65,12 @@ class NutritionListViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-
     private fun showNutritions(nutritionList: List<Nutrition>){
         nutritions.value = nutritionList
         nutritionError.value = false
         nutritionLoading.value = false
     }
+
     private fun saveRoom(nutritionList: List<Nutrition>){
         viewModelScope.launch(Dispatchers.IO) {
             val dao = NutritionDatabase(getApplication()).nutritionDao()
@@ -74,7 +81,9 @@ class NutritionListViewModel(application: Application) : AndroidViewModel(applic
                 nutritionList[i].id = uuidList[i].toInt()
                 i++
             }
-            showNutritions(nutritionList)
+            withContext(Dispatchers.Main) {
+                showNutritions(nutritionList)
+            }
         }
         privacySharedPreferences.saveTime(System.nanoTime())
     }
