@@ -8,6 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
@@ -20,9 +21,16 @@ class MainActivity : AppCompatActivity() {
         mapView = findViewById(R.id.mapView)
         mapView.setMultiTouchControls(true)
 
-        val startPoint = GeoPoint(41.015137, 28.979530)
+        val startPoint = GeoPoint(38.7312, 35.4787)
         mapView.controller.setZoom(13.0)
         mapView.controller.setCenter(startPoint)
+
+        val marker = Marker(mapView)
+        marker.position = startPoint
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        marker.title = "Kayseri"
+        marker.snippet = "Burası Kayseri Merkez"
+        mapView.overlays.add(marker)
     }
 
     override fun onResume() {
