@@ -43,4 +43,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.osmdroid.android)
+    implementation(libs.play.services.location)
 }
